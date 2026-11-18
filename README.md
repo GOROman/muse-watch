@@ -2,6 +2,9 @@
 
 **Web 3D ビューワー: https://goroman.github.io/muse-watch/** (パーツ切替・回転・ズーム・組立表示)
 
+## v5 (最新, 2026-11-18)
+レトロコンセプト (design/concept_final.webp) で再設計。機構は v4 のまま (竜頭が上・パック平置き、実機写真 design/charging_orientation.jpg で確認)、パックは底から内部に埋め込み+底カバー (M3×2)。生成: src/build_v5.py、検証: 干渉 0・全パーツ watertight。
+
 Google Pixel Watch 4 (45mm) をネックレスのペンダントとして身に着け、
 **ネックレスを付けたまま** PalmPilot のクレードルのように上から差し込んで
 充電できるドックの 3D プリントモデル。
