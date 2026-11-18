@@ -1,5 +1,7 @@
 # Muse Watch — Pixel Watch 4 ペンダント & ドッキングステーション
 
+**Web 3D ビューワー: https://goroman.github.io/muse-watch/** (パーツ切替・回転・ズーム・組立表示)
+
 Google Pixel Watch 4 (45mm) をネックレスのペンダントとして身に着け、
 **ネックレスを付けたまま** PalmPilot のクレードルのように上から差し込んで
 充電できるドックの 3D プリントモデル。
