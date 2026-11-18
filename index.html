@@ -96,6 +96,17 @@ import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const PARTS = [
+  { id:'assembly5', label:'v5 ドッキング状態', files:[
+      { url:'models/dock_v5.stl', color:0xe6dcc3 },
+      { url:'models/pendant_dummy_v5_docked.stl', color:0x2a2e35 },
+      { url:'models/accent_disc.stl', color:0xe86a2a } ],
+    note:'v5: レトロ造形 + パック埋め込み。ペンダントを90°回して竜頭を上に差し込む（実機の充電姿勢と同じ）。オレンジの円盤が右側面のアクセント。' },
+  { id:'dock5', label:'ドック v5', files:[
+      { url:'models/dock_v5.stl', color:0xe6dcc3 },
+      { url:'models/accent_disc.stl', color:0xe86a2a } ],
+    note:'ドック v5（アイボリー想定, 124×92×80mm）。パックは底から内部に埋め込み、溝面だけが座面にツライチで出る。底カバーは M3 ネジ2本止め。' },
+  { id:'cover', label:'パック底カバー', files:[ { url:'models/puck_cover.stl', color:0x8a8f96 } ],
+    note:'パックを下から支えるレール付き底カバー。パック交換はこのカバーを外して下から抜く。' },
   { id:'assembly', label:'ドッキング状態', files:[
       { url:'models/dock.stl', color:0x4a90b8 },
       { url:'models/pendant_dummy_docked.stl', color:0x2a2e35 } ],
