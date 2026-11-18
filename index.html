@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muse Watch — 3D Viewer</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, "Hiragino Sans", "Noto Sans JP", sans-serif; background: #101418; color: #e8edf2; }
+  header { padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: #171d24; border-bottom: 1px solid #2a333f; }
+  header h1 { font-size: 16px; margin: 0 10px 0 0; font-weight: 700; }
+  header .sub { font-size: 12px; color: #9fb0c1; width: 100%; }
+  button, select { background: #232c37; color: #e8edf2; border: 1px solid #3a4656; border-radius: 8px; padding: 7px 10px; font-size: 13px; cursor: pointer; }
+  button.active { background: #2f6db3; border-color: #2f6db3; }
+  button:hover { filter: brightness(1.15); }
+  #view { position: fixed; inset: 0; top: 86px; }
+  canvas { display: block; }
+  #info { position: fixed; left: 12px; bottom: 12px; background: rgba(16,20,24,.85); border: 1px solid #2a333f; border-radius: 10px; padding: 8px 12px; font-size: 12px; color: #c6d2df; max-width: min(92vw, 520px); }
+  #loading { position: fixed; right: 12px; bottom: 12px; font-size: 12px; color: #9fb0c1; }
+  @media (max-width: 640px) { #view { top: 118px; } }
+</style>
+<script type="importmap">
+{ "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<header>
+  <h1>Muse Watch 3D Viewer</h1>
+  <div id="parts"></div>
+  <button id="spinBtn">自動回転: OFF</button>
+  <button id="wireBtn">ワイヤーフレーム: OFF</button>
+  <button id="frontBtn">正面</button>
+  <button id="topBtn">上面</button>
+  <div class="sub">Pixel Watch 4 (45mm) ペンダント + ネックレスのまま充電ドック / ドラッグ=回転, ホイール=ズーム, 右ドラッグ=移動</div>
+</header>
+<div id="view"></div>
+<div id="info"></div>
+<div id="loading"></div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+
+const PARTS = [
+  { id: 'assembly', label: 'ドッキング状態 (組立)', files: [
+      { url: 'models/dock.stl', color: 0x3a7ca5 },
+      { url: 'models/pendant_dummy_docked.stl', color: 0x22262b } ],
+    note: 'ペンダントを90°回して上から差し込んだ状態。黒=ペンダント (ダミー形状)、左にタワーと吊り輪=紐の逃げ、竜頭は上向き。下の青いサドルに純正充電パックが入る。' },
+  { id: 'dock', label: 'ドック', files: [ { url: 'models/dock.stl', color: 0x3a7ca5 } ],
+    note: 'ドック本体 (PLA, 124×92×80mm)。中央下のサドルに純正パック 41×27×9.6mm を収める。左側は紐の通り道で開放。' },
+  { id: 'shell', label: 'ペンダントシェル v4', files: [ { url: 'models/pendant_shell_v4.stl', color: 0x8a8f96 } ],
+    note: 'シェル v4 (PLA)。左側 (充電接点側) を弦カットで開口し、本体側面が3.1mm突き出す。上部タワーにチェーン穴φ5。' },
+  { id: 'liner', label: 'ライナー (TPU)', files: [ { url: 'models/pendant_liner_v3.stl', color: 0xd8d3c3 } ],
+    note: 'TPUライナー v3。本体に直接触れる層。背面センサー窓φ29。' },
+  { id: 'bail', label: 'ベイル / 吊り輪 (TPU)', files: [ { url: 'models/pendant_bail_v3.stl', color: 0xd8d3c3 } ],
+    note: 'TPUベイル v3。紐を通す吊り輪 (穴φ9)。紐は使用者側で用意。' },
+  { id: 'module', label: 'サイドモジュール (TPU)', files: [ { url: 'models/pendant_side_module_v3.stl', color: 0xd8d3c3 } ],
+    note: 'TPUサイドモジュール v3。竜頭とサイドボタンを上から押せるプランジャ付き。' },
+  { id: 'pucktest', label: 'パック fit テスト', files: [ { url: 'models/puck_fit_test.stl', color: 0x3a7ca5 } ],
+    note: '純正パックのポケットだけのフィット確認ピース。本印刷の前にこれで確認する。' },
+];
+
+const container = document.getElementById('view');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x101418);
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 5000);
+camera.up.set(0, 0, 1); // models are Z-up
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+container.appendChild(renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.autoRotateSpeed = 2.0;
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(80, -120, 160); scene.add(key);
+const fill = new THREE.DirectionalLight(0xbcd3ff, 0.7); fill.position.set(-120, 80, -60); scene.add(fill);
+const grid = new THREE.GridHelper(240, 24, 0x33404f, 0x232c37); grid.rotation.x = Math.PI / 2; scene.add(grid);
+
+const loader = new STLLoader();
+let group = null, spin = false, wire = false;
+
+function resize() {
+  const w = container.clientWidth, h = container.clientHeight;
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+  renderer.setSize(w, h); renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+}
+addEventListener('resize', resize);
+
+function frame(objects) {
+  const box = new THREE.Box3();
+  objects.forEach(o => box.expandByObject(o));
+  const c = box.getCenter(new THREE.Vector3());
+  const s = box.getSize(new THREE.Vector3()).length();
+  controls.target.copy(c);
+  camera.position.set(c.x + s * 0.55, c.y - s * 0.75, c.z + s * 0.45);
+  camera.near = s / 100; camera.far = s * 20; camera.updateProjectionMatrix();
+}
+
+async function load(part) {
+  document.getElementById('loading').textContent = '読み込み中… ' + part.label;
+  if (group) { scene.remove(group); group.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
+  group = new THREE.Group();
+  const loaded = [];
+  for (const f of part.files) {
+    const geo = await loader.loadAsync(f.url);
+    geo.computeVertexNormals();
+    const mat = new THREE.MeshStandardMaterial({ color: f.color, roughness: 0.6, metalness: 0.05, wireframe: wire });
+    const mesh = new THREE.Mesh(geo, mat);
+    group.add(mesh); loaded.push(mesh);
+  }
+  scene.add(group);
+  frame(loaded);
+  document.getElementById('info').textContent = part.note;
+  document.getElementById('loading').textContent = '';
+  document.querySelectorAll('#parts button').forEach(b => b.classList.toggle('active', b.dataset.id === part.id));
+}
+
+const partsDiv = document.getElementById('parts');
+PARTS.forEach(p => {
+  const b = document.createElement('button');
+  b.textContent = p.label; b.dataset.id = p.id;
+  b.onclick = () => load(p);
+  partsDiv.appendChild(b);
+});
+
+const spinBtn = document.getElementById('spinBtn');
+spinBtn.onclick = () => { spin = !spin; controls.autoRotate = spin; spinBtn.textContent = '自動回転: ' + (spin ? 'ON' : 'OFF'); spinBtn.classList.toggle('active', spin); };
+const wireBtn = document.getElementById('wireBtn');
+wireBtn.onclick = () => { wire = !wire; if (group) group.traverse(o => { if (o.material) o.material.wireframe = wire; }); wireBtn.textContent = 'ワイヤーフレーム: ' + (wire ? 'ON' : 'OFF'); wireBtn.classList.toggle('active', wire); };
+document.getElementById('frontBtn').onclick = () => { if (!group) return; const box = new THREE.Box3().setFromObject(group); const c = box.getCenter(new THREE.Vector3()); const s = box.getSize(new THREE.Vector3()).length(); camera.position.set(c.x, c.y - s, c.z); controls.target.copy(c); };
+document.getElementById('topBtn').onclick = () => { if (!group) return; const box = new THREE.Box3().setFromObject(group); const c = box.getCenter(new THREE.Vector3()); const s = box.getSize(new THREE.Vector3()).length(); camera.position.set(c.x, c.y, c.z + s); controls.target.copy(c); };
+
+resize();
+load(PARTS[0]);
+renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+</script>
+</body>
+</html>
