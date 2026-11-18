@@ -96,6 +96,15 @@ import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const PARTS = [
+  { id:'assembly7', label:'v7 ドッキング状態', files:[
+      { url:'models/dock_v7.stl', color:0xe6dcc3 },
+      { url:'models/pendant_v6_docked.stl', color:0x2a2e35 },
+      { url:'models/accent_badge.stl', color:0xe86a2a } ],
+    note:'最新: v7 台形ドック + v6 バンパーケース。ガイドフィンのスロットにアイレットが落ちる。パックは底から埋め込み、底カバーは v5 と共通。干渉 0 検証済み。' },
+  { id:'dock7', label:'ドック v7', files:[
+      { url:'models/dock_v7.stl', color:0xe6dcc3 },
+      { url:'models/accent_badge.stl', color:0xe86a2a } ],
+    note:'ドック v7 (100×76×66mm)。前面にオレンジの長方形バッジ、側面下部にリブ溝、ケーブルは背面右から。' },
   { id:'assembly6', label:'v6 ドッキング状態', files:[
       { url:'models/dock_v5.stl', color:0xe6dcc3 },
       { url:'models/pendant_v6_docked.stl', color:0x2a2e35 },

@@ -2,7 +2,10 @@
 
 **Web 3D ビューワー: https://goroman.github.io/muse-watch/** (パーツ切替・回転・ズーム・組立表示)
 
-## v5 (最新, 2026-11-18)
+## v7 ドック + v6 ケース (最新, 2026-11-18)
+コンセプト: design/concept_final_v7.webp / design/concept_handheld.webp。ドックは台形タワー型 (100×76×66mm)、前面オレンジバッジ、ガイドフィン、パック埋め込み+底カバー (v5共通)。ケースはバンパー型 (design/pendant_case_concept.jpg)、竜頭が上のまま装着→そのままドッキング。全パーツ干渉 0・watertight 検証済み、生成: src/build_v6.py / src/build_v7.py。
+
+## v5 (2026-11-18)
 レトロコンセプト (design/concept_final.webp) で再設計。機構は v4 のまま (竜頭が上・パック平置き、実機写真 design/charging_orientation.jpg で確認)、パックは底から内部に埋め込み+底カバー (M3×2)。生成: src/build_v5.py、検証: 干渉 0・全パーツ watertight。
 
 Google Pixel Watch 4 (45mm) をネックレスのペンダントとして身に着け、
