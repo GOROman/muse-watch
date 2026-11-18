@@ -96,6 +96,13 @@ import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const PARTS = [
+  { id:'assembly6', label:'v6 ドッキング状態', files:[
+      { url:'models/dock_v5.stl', color:0xe6dcc3 },
+      { url:'models/pendant_v6_docked.stl', color:0x2a2e35 },
+      { url:'models/accent_disc.stl', color:0xe86a2a } ],
+    note:'最新構成: v6 バンパーケース + v5 ドック。ケースは竜頭が上のまま装着でき、外してそのまま真下に置くと充電。干渉 0 で嵌合検証済み。' },
+  { id:'shell6', label:'ケース v6 (バンパー)', files:[ { url:'models/pendant_shell_v6.stl', color:0xe6dcc3 } ],
+    note:'バンパー型ケース (PETG 推奨)。竜頭は両脇ガード付きで露出、下側は接点が開口、紐は左右のアイレット (楕円穴 7×4.5mm)。前面ガラスと背面センサーは開放。' },
   { id:'assembly5', label:'v5 ドッキング状態', files:[
       { url:'models/dock_v5.stl', color:0xe6dcc3 },
       { url:'models/pendant_dummy_v5_docked.stl', color:0x2a2e35 },
