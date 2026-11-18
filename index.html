@@ -96,6 +96,8 @@ import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const PARTS = [
+  { id:'fittest7', label:'パック fit テスト v7', files:[ { url:'models/puck_fit_test_v7.stl', color:0xcfc7ae } ],
+    note:'ドック v7 の底部スライス (実寸)。これと底カバーを刷って実機パックが下から入るか先に確認する。壁の遊び X 0.8mm / Y 0.7mm。' },
   { id:'assembly71', label:'v7+v6.1 ドッキング状態', files:[
       { url:'models/dock_v7.stl', color:0xe6dcc3 },
       { url:'models/pendant_v6_1_docked.stl', color:0x2a2e35 },
