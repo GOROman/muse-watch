@@ -96,6 +96,13 @@ import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const PARTS = [
+  { id:'assembly71', label:'v7+v6.1 ドッキング状態', files:[
+      { url:'models/dock_v7.stl', color:0xe6dcc3 },
+      { url:'models/pendant_v6_1_docked.stl', color:0x2a2e35 },
+      { url:'models/accent_badge.stl', color:0xe86a2a } ],
+    note:'最新構成: v7 ドック + v6.1 ケース (アイレットは左だけ)。左アイレットがフィンのスロットに落ちる。干渉 0 検証済み。' },
+  { id:'shell61', label:'ケース v6.1 (左アイレット)', files:[ { url:'models/pendant_shell_v6_1.stl', color:0xe6dcc3 } ],
+    note:'v6.1: ストラップ穴は左だけに変更 (右はバンパーが滑らかに続く)。充電部の開口はそのまま。PETG 推奨。' },
   { id:'assembly7', label:'v7 ドッキング状態', files:[
       { url:'models/dock_v7.stl', color:0xe6dcc3 },
       { url:'models/pendant_v6_docked.stl', color:0x2a2e35 },

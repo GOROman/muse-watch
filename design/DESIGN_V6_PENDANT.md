@@ -14,3 +14,14 @@ Reference: design/pendant_case_concept.jpg (FRONT / RIGHT SIDE / REAR)
   The v5 dock's seat/puck geometry (docked pose) already matches this
   orientation; guides/cheeks may need rework for the bumper outline
   (no tower on the left; eyelets protrude at both sides at mid height).
+
+## CORRECTIONS (user, 2026-11-18 17:09) — case v6.1
+- STRAP EYELET IS LEFT ONLY: remove the right eyelet; the bumper continues
+  smoothly on the right side. (In worn/front view, crown up: eyelet on the
+  viewer's left.) The cord attaches at the single left eyelet.
+- CHARGING AREA OPEN: the bottom segment must be clearly open at the
+  charging contacts — no bumper material under the contact patch; the
+  silver rim with the two contact dots stays visible (as in the concept
+  front view).
+- Dock impact: v7 dock's right fin slot becomes unnecessary but harmless;
+  the left fin slot is still required for the left eyelet.
